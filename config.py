@@ -8,8 +8,7 @@
 # Whether to replace /bin/sh
 REPLACE_BINSH = False
 
-FLAG_BAK_FILENAME = "flags.txt"
-PORT_INFO_FILENAME = "ports.txt"
+FLAG_BAK_FILENAME = "flags.json"
 PWN_BIN_PATH = "./bin"
 XINETD_CONF_FILENAME = "pwn.xinetd"
 PORT_LISTEN_START_FROM = 10000

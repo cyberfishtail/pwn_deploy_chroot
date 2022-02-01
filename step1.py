@@ -24,15 +24,13 @@ def isExistBeforeGetFlagAndPort(filename, contentBefore):
 def generateFlags(filelist):
     tmp_flag = ""
     contentBefore = []
-    if not os.path.exists(FLAG_BAK_FILENAME):
-        os.popen("touch " + FLAG_BAK_FILENAME)
     with open(FLAG_BAK_FILENAME, 'r') as f:
         while 1:
             line = f.readline()
             if not line:
                 break
             contentBefore.append(line)
-    # bin's num != flags.txt's linenum, empty the flags.txt
+    # bin's num != flags.json's linenum, empty the flags.json
     if len(filelist) != len(contentBefore):
         os.popen("echo '' > " + FLAG_BAK_FILENAME)
         contentBefore = []

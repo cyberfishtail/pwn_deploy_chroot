@@ -15,7 +15,7 @@ def isExistBeforeGetFlagAndPort(filename, contentBefore):
     return ret
 
 def getFlags():
-    with open('flags.txt', 'r') as f:
+    with open('flags.json', 'r') as f:
         return json.load(f)
 
 def generateXinetd(flags):
