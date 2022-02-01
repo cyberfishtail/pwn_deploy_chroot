@@ -4,6 +4,12 @@
 
 https://github.com/giantbranch/pwn_deploy_chroot
 
+## Improvements
+
+1. add python3 compatibility
+2. edit flags.json as necessary
+3. flags.json backup after running step2.py
+
 ## How to Use
 
 ### 1. Git clone
@@ -59,3 +65,7 @@ python3 step2.py
 ```
 docker-compose up --build -d
 ```
+
+### 7. Maintenance
+
+See backup json files in ```./backup``` directory 

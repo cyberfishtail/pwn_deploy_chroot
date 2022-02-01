@@ -10,52 +10,55 @@ def getFileList():
     filelist.sort()
     return filelist
 
-def isExistBeforeGetFlagAndPort(filename, contentBefore):
-    filename_tmp = ""
-    tmp_dict = ""
-    ret = False
-    for line in contentBefore:
-        tmp_dict = json.loads(line)
-        filename_tmp = tmp_dict["filename"]
-        if filename == filename_tmp:
-            ret = [tmp_dict["flag"], tmp_dict["port"]]
-    return ret
+def getFlags():
+    with open('flags.json', 'r') as f:
+        return json.load(f)
+
+def checkFlag(flag_dict):
+    if flag_dict == None or flag_dict == {}:
+        return False
+    if flag_dict["port"] < 0 or flag_dict["port"] > 65535:
+        return False
+    if not os.path.exists('''bin/{0}'''.format(flag_dict["filename"])):
+        print('''bin/{0} not exist'''.format(flag_dict["filename"]))
+        return False
+    return True
+
 
 def generateFlags(filelist):
-    tmp_flag = ""
-    contentBefore = []
-    with open(FLAG_BAK_FILENAME, 'r') as f:
-        while 1:
-            line = f.readline()
-            if not line:
-                break
-            contentBefore.append(line)
-    # bin's num != flags.json's linenum, empty the flags.json
-    if len(filelist) != len(contentBefore):
-        os.popen("echo '' > " + FLAG_BAK_FILENAME)
-        contentBefore = []
-    port = PORT_LISTEN_START_FROM + len(contentBefore)
-    with open(FLAG_BAK_FILENAME, 'w') as f:
-        flag_list = []
-        for filename in filelist:
-            flag_dict = {}
-            ret = isExistBeforeGetFlagAndPort(filename, contentBefore)
-            if ret == False:
-                tmp_flag = "flag{" + str(uuid.uuid4()) + "}"
-                flag_dict["port"] = port
-                port = port + 1
-            else:
-                tmp_flag = ret[0]
-                flag_dict["port"] = ret[1]
-                
-            flag_dict["filename"] = filename
-            flag_dict["flag"] = tmp_flag
-            
-            flag_list.append(flag_dict)
+    
+    ## if previous flags.json exist
+    have_previous_flags = False
+    if os.path.exists('flags.json'):
+        previous_flags = getFlags()
+        have_previous_flags = True
+    
+    flags_dic_list = []
+    port = PORT_LISTEN_START_FROM
+
+    for filename in filelist:
+        flag_dict = {}
+        if have_previous_flags == True:
+            for previous_flag in previous_flags:
+                if previous_flag != None:
+                    if previous_flag["filename"] == filename:
+                        flag_dict = previous_flag 
+                        break
         
-        flag_json = json.dumps(flag_list,indent=4, separators=(',', ':'))
-        print(flag_json)
-        f.write(flag_json)
+        if have_previous_flags == False or not checkFlag(flag_dict):
+            flag_dict["port"] = port
+            port = port + 1
+            flag_dict["filename"] = filename
+            tmp_flag = "flag{" + str(uuid.uuid4()) + "}"
+            flag_dict["flag"] = tmp_flag
+
+        flags_dic_list.append(flag_dict)
+        flags_json = json.dumps(flags_dic_list,indent=4, separators=(',', ':'))
+    
+    ## write json into file 
+    with open('flags.json', 'w') as f:
+        f.write(flags_json)
         f.close()
+    print(flags_json)
 
 generateFlags(getFileList())

@@ -1,22 +1,13 @@
 from config import *
-import os
-import uuid
+import time
 import json
 
-def isExistBeforeGetFlagAndPort(filename, contentBefore):
-    filename_tmp = ""
-    tmp_dict = ""
-    ret = False
-    for line in contentBefore:
-        tmp_dict = json.loads(line)
-        filename_tmp = tmp_dict["filename"]
-        if filename == filename_tmp:
-            ret = [tmp_dict["flag"], tmp_dict["port"]]
-    return ret
-
-def getFlags():
+def getFlagsAndSave():
     with open('flags.json', 'r') as f:
-        return json.load(f)
+        flags_json = json.load(f)
+    with open('backup/flags_{0}.json'.format(time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime())), 'w') as f:
+        f.write(json.dumps(flags_json,indent=4, separators=(',', ':')))
+    return flags_json
 
 def generateXinetd(flags):
     conf = ""
@@ -105,7 +96,7 @@ def generateDockerCompose(flags):
         f.write(conf)
 
 
-flags = getFlags()
+flags = getFlagsAndSave()
 generateXinetd(flags)
 generateDockerfile(flags)
 generateDockerCompose(flags)

@@ -1,0 +1,12 @@
+[
+    {
+        "port":10008,
+        "filename":"rip",
+        "flag":"flag{eb55266c-30cc-4cfa-8e62-d6cc3c350847}"
+    },
+    {
+        "port":10007,
+        "filename":"test_your_nc",
+        "flag":"flag{test_your_nc}"
+    }
+]
